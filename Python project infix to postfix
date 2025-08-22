@@ -1,0 +1,59 @@
+#Python projest infix to postfix
+def infix_to_postfix(expression):
+    precedence = {"+": 1, "-": 1, "*": 2, "/": 2, "^": 3}
+    output = []
+    stack = []
+
+    for token in expression.split():
+        if token.isalnum():  # operand (number/variable)
+            output.append(token)
+        elif token == "(":
+            stack.append(token)
+        elif token == ")":
+            while stack and stack[-1] != "(":
+                output.append(stack.pop())
+            stack.pop()  # remove "("
+        else:  # operator
+            while (stack and stack[-1] != "(" and
+                   precedence.get(stack[-1], 0) >= precedence.get(token, 0)):
+                output.append(stack.pop())
+            stack.append(token)
+
+    while stack:
+        output.append(stack.pop())
+
+    return " ".join(output)
+
+
+def evaluate_postfix(expression):
+    stack = []
+    operators = {"+", "-", "*", "/", "^"}
+
+    for token in expression.split():
+        if token not in operators:
+            stack.append(float(token))
+        else:
+            b = stack.pop()
+            a = stack.pop()
+
+            if token == "+":
+                stack.append(a + b)
+            elif token == "-":
+                stack.append(a - b)
+            elif token == "*":
+                stack.append(a * b)
+            elif token == "/":
+                stack.append(a / b)
+            elif token == "^":
+                stack.append(a ** b)
+
+    return stack[0]
+
+
+if __name__ == "__main__":
+    choice = input("Choose mode: (1) Infix → Postfix  (2) Evaluate Postfix: ")
+
+    if choice == "1":
+        expr = input("Enter an infix expression (tokens separated by spaces): ")
+        result = infix_to_postfix(expr)
+        print("P
